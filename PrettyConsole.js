@@ -24,48 +24,47 @@ module.exports = {
     BgCyan: "\x1b[46m",
     BgWhite: "\x1b[47m"
   },
-
-  log: function() {
-    var a, args, i, len;
-    args = ['  ', new Date().toUTCString(), this.colors.FgWhite];
-    for (i = 0, len = arguments.length; i < len; i++) {
-      a = arguments[i];
+  
+  buffer: '  ',
+  
+  pusher: function(fgColor, oarguments){
+    var a, args, i, len, lines, li, lineslen;
+    
+    args = [this.buffer, new Date().toUTCString(), fgColor];
+    
+    for (i = 0, len = oarguments.length; i < len; i++) {
+      a = oarguments[i];
+      
+      lines = a.match(/[^\r\n]+/g);
+      
+      if(lines.length > 1){
+        for (li = 1, lineslen = lines.length; li < lineslen; li++) {
+          lines[li] = this.buffer + this.buffer + lines[li];
+        }
+        
+        a = lines.join("\n");
+      }
+      
       args.push(a);
     }
     args.push(this.colors.Reset);
-    return console.log.apply(this, args);
+    
+    return args;
+  },
+
+  log: function() {
+    return console.log.apply(this, this.pusher(this.colors.FgWhite, arguments));
   },
 
   warn: function() {
-    var a, args, i, len;
-    args = ['  ', new Date().toUTCString(), this.colors.FgYellow];
-    for (i = 0, len = arguments.length; i < len; i++) {
-      a = arguments[i];
-      args.push(a);
-    }
-    args.push(this.colors.Reset);
-    return console.warn.apply(this, args);
+    return console.warn.apply(this, this.pusher(this.colors.FgYellow, arguments));
   },
 
   error: function() {
-    var a, args, i, len;
-    args = ['  ', new Date().toUTCString(), this.colors.FgRed];
-    for (i = 0, len = arguments.length; i < len; i++) {
-      a = arguments[i];
-      args.push(a);
-    }
-    args.push(this.colors.Reset);
-    return console.error.apply(this, args);
+    return console.error.apply(this, this.pusher(this.colors.FgRed, arguments));
   },
 
   info: function() {
-    var a, args, i, len;
-    args = ['  ', new Date().toUTCString(), this.colors.FgCyan];
-    for (i = 0, len = arguments.length; i < len; i++) {
-      a = arguments[i];
-      args.push(a);
-    }
-    args.push(this.colors.Reset);
-    return console.info.apply(this, args);
+    return console.info.apply(this, this.pusher(this.colors.FgCyan, arguments));
   }
 };
