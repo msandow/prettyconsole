@@ -35,25 +35,31 @@ module.exports = {
       if(seenObjs.indexOf(o) > -1){
         return "[Circular]";
       }
-      
-      seenObjs.push(o);
-      
+
       if(Array.isArray(o)){
+        if(o.length){
+          seenObjs.push(o);
+        }
+        
         no = []
         
         for (i = 0, len = o.length; i < len; i++) {
-          if(typeof o[i] === 'object'){
+          if(typeof o[i] === 'object' && o[i] !== null){
             no.push(walker(o[i]));
           }else{
             no.push(o[i]);
           }
         }
       }else{
+        if(Object.keys(o).length){
+          seenObjs.push(o);
+        }
+        
         no = {};
         
         for(ok in o){
           if(o.hasOwnProperty(ok)){
-            if(typeof o[ok] === 'object'){
+            if(typeof o[ok] === 'object' && o[ok] !== null){
               no[ok] = walker(o[ok]);
             }else{
               no[ok] = o[ok];
@@ -66,7 +72,7 @@ module.exports = {
     };
     
     return function(k, v){
-      if(typeof v !== 'object'){
+      if(typeof v !== 'object' || v === null){
         return v;
       }
       return walker(v);
