@@ -83,7 +83,7 @@ module.exports = {
     var i, len;
     
     for (i = 0, len = oarguments.length; i < len; i++) {
-      if(typeof oarguments[i] === 'object'){
+      if(typeof oarguments[i] === 'object' && oarguments[i] !== null){
         oarguments[i] = JSON.stringify(oarguments[i], this.censor(oarguments[i]), 2);
       }
     }
@@ -101,7 +101,7 @@ module.exports = {
       
       lines = a.match(/[^\r\n]+/g);
       
-      if(lines.length > 1){
+      if(lines && lines.length > 1){
         for (li = 1, lineslen = lines.length; li < lineslen; li++) {
           lines[li] = this.buffer + this.buffer + lines[li];
         }
