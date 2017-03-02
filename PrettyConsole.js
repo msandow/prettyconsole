@@ -26,6 +26,64 @@ module.exports = {
   },
   
   buffer: '  ',
+
+  censor: function(o){
+    var seenObjs = [],
+    walker = function(o){
+      var ok, i, len, no;
+      
+      if(seenObjs.indexOf(o) > -1){
+        return "[Circular]";
+      }
+      
+      seenObjs.push(o);
+      
+      if(Array.isArray(o)){
+        no = []
+        
+        for (i = 0, len = o.length; i < len; i++) {
+          if(typeof o[i] === 'object'){
+            no.push(walker(o[i]));
+          }else{
+            no.push(o[i]);
+          }
+        }
+      }else{
+        no = {};
+        
+        for(ok in o){
+          if(o.hasOwnProperty(ok)){
+            if(typeof o[ok] === 'object'){
+              no[ok] = walker(o[ok]);
+            }else{
+              no[ok] = o[ok];
+            }
+          }
+        }
+      }
+      
+      return no;
+    };
+    
+    return function(k, v){
+      if(typeof v !== 'object'){
+        return v;
+      }
+      return walker(v);
+    };
+  },
+
+  stringify: function(oarguments){
+    var i, len;
+    
+    for (i = 0, len = oarguments.length; i < len; i++) {
+      if(typeof oarguments[i] === 'object'){
+        oarguments[i] = JSON.stringify(oarguments[i], this.censor(oarguments[i]), 2);
+      }
+    }
+    
+    return oarguments;
+  },
   
   pusher: function(fgColor, oarguments){
     var a, args, i, len, lines, li, lineslen;
@@ -53,18 +111,18 @@ module.exports = {
   },
 
   log: function() {
-    return console.log.apply(this, this.pusher(this.colors.FgWhite, arguments));
+    return console.log.apply(this, this.pusher(this.colors.FgWhite, this.stringify(arguments)));
   },
 
   warn: function() {
-    return console.warn.apply(this, this.pusher(this.colors.FgYellow, arguments));
+    return console.warn.apply(this, this.pusher(this.colors.FgYellow, this.stringify(arguments)));
   },
 
   error: function() {
-    return console.error.apply(this, this.pusher(this.colors.FgRed, arguments));
+    return console.error.apply(this, this.pusher(this.colors.FgRed, this.stringify(arguments)));
   },
 
   info: function() {
-    return console.info.apply(this, this.pusher(this.colors.FgCyan, arguments));
+    return console.info.apply(this, this.pusher(this.colors.FgCyan, this.stringify(arguments)));
   }
 };
