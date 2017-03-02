@@ -97,7 +97,7 @@ module.exports = {
     args = [this.buffer, new Date().toUTCString(), fgColor];
     
     for (i = 0, len = oarguments.length; i < len; i++) {
-      a = oarguments[i];
+      a = String(oarguments[i]);
       
       lines = a.match(/[^\r\n]+/g);
       
