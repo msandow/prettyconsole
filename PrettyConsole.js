@@ -136,7 +136,7 @@ module.exports = {
   debug: function() {
     var stk = (new Error).stack.split('at '),
     stkidx = stk.findIndex(function(s){return /PrettyConsole\.js/.test(s)});
-    [].push.call(arguments, '\n', this.colors.Hidden, new Date().toUTCString(), this.colors.Reset, this.colors.FgMagenta, " " +stk[stkidx+1].trim());
+    [].push.call(arguments, '\n', this.colors.Hidden, new Date().toUTCString(), this.colors.Reset, this.colors.FgMagenta, " - " +stk[stkidx+1].trim());
     return console.info.apply(this, this.pusher(this.colors.FgMagenta, this.stringify(arguments)));
   }
 };
