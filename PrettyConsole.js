@@ -100,7 +100,7 @@ module.exports = {
       a = String(oarguments[i]);
       
       lines = a.match(/[^\r\n]+/g);
-      
+
       if(lines && lines.length > 1){
         for (li = 1, lineslen = lines.length; li < lineslen; li++) {
           lines[li] = this.buffer + this.buffer + lines[li];
@@ -111,6 +111,7 @@ module.exports = {
       
       args.push(a);
     }
+  
     args.push(this.colors.Reset);
     
     return args;
@@ -130,5 +131,12 @@ module.exports = {
 
   info: function() {
     return console.info.apply(this, this.pusher(this.colors.FgCyan, this.stringify(arguments)));
+  },
+
+  debug: function() {
+    var stk = (new Error).stack.split('at '),
+    stkidx = stk.findIndex(function(s){return /PrettyConsole\.js/.test(s)});
+    [].push.call(arguments, '\n', this.colors.Hidden, new Date().toUTCString(), this.colors.Reset, this.colors.FgMagenta, " " +stk[stkidx+1].trim());
+    return console.info.apply(this, this.pusher(this.colors.FgMagenta, this.stringify(arguments)));
   }
 };
