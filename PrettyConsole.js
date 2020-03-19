@@ -1,3 +1,9 @@
+var moment = require('moment'),
+getDate = function(){
+  return moment().format('MMMM Do YYYY, h:mm:ss a');
+};
+
+
 module.exports = {
   colors: {
     Reset: "\x1b[0m",
@@ -94,7 +100,7 @@ module.exports = {
   pusher: function(fgColor, oarguments){
     var a, args, i, len, lines, li, lineslen;
     
-    args = [this.buffer, new Date().toUTCString(), fgColor];
+    args = [this.buffer, getDate(), fgColor];
     
     for (i = 0, len = oarguments.length; i < len; i++) {
       a = String(oarguments[i]);
@@ -136,7 +142,7 @@ module.exports = {
   debug: function() {
     var stk = (new Error).stack.split('at '),
     stkidx = stk.findIndex(function(s){return /PrettyConsole\.js/.test(s)});
-    [].push.call(arguments, '\n', this.colors.Hidden, new Date().toUTCString(), this.colors.Reset, this.colors.FgMagenta, " - " +stk[stkidx+1].trim());
+    [].push.call(arguments, '\n', this.colors.Hidden, getDate(), this.colors.Reset, this.colors.FgMagenta, " - " +stk[stkidx+1].trim());
     return console.info.apply(this, this.pusher(this.colors.FgMagenta, this.stringify(arguments)));
   }
 };

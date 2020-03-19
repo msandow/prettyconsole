@@ -1,7 +1,9 @@
 {
   "name": "PrettyConsole",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "main": "PrettyConsole.js",
-  "dependencies": {}
+  "dependencies": {
+    "moment": "=2.0.0"
+  }
 }
